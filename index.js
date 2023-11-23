@@ -22,6 +22,47 @@ app.engine(
           day: "numeric",
         });
       },
+      times: function (n, block) {
+        var accum = "";
+        for (var i = 0; i < n; ++i) {
+          block.data.index = i;
+          block.data.first = i === 0;
+          block.data.last = i === n - 1;
+          accum += block.fn(this);
+        }
+        return accum;
+      },
+      math: function (lvalue, operator, rvalue) {
+        lvalue = parseFloat(lvalue);
+        rvalue = parseFloat(rvalue);
+        return {
+          "+": lvalue + rvalue,
+          "-": lvalue - rvalue,
+          "*": lvalue * rvalue,
+          "/": lvalue / rvalue,
+          "%": lvalue % rvalue,
+        }[operator];
+      },
+      when: function (operand_1, operator, operand_2, options) {
+        var operators = {
+            gteq: function (l, r) {
+              return Number(l) >= Number(r);
+            },
+            lteq: function (l, r) {
+              return Number(l) <= Number(r);
+            },
+            lt: function (l, r) {
+              return Number(l) < Number(r);
+            },
+            gt: function (l, r) {
+              return Number(l) > Number(r);
+            },
+          },
+          result = operators[operator](operand_1, operand_2);
+
+        if (result) return options.fn(this);
+        else return options.inverse(this);
+      },
     },
   })
 );
