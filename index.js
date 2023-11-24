@@ -3,7 +3,9 @@ const app = express();
 const port = 4000;
 const expressHbs = require("express-handlebars");
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/html"));
+
 app.engine(
   "hbs",
   expressHbs.engine({
